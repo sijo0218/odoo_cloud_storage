@@ -1,0 +1,2 @@
+id,name,model_id,group_id/id,operation,domain
+access_cloud_attachment_migration_wizard,cloud.attachment.migration.wizard,cloud.attachment.migration.wizard,base.group_system,crud,
