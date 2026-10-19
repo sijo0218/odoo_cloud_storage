@@ -2,6 +2,7 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 import logging
+from ..models.cloud_storage_client import get_config_param
 
 _logger = logging.getLogger(__name__)
 
@@ -33,16 +34,16 @@ class CloudAttachmentMigrationWizard(models.TransientModel):
 
     @api.depends('batch_size')
     def _compute_migration_stats(self):
-        min_size_kb = int(self.env['ir.config_parameter'].sudo().get_param('cloud_attachment_storage.min_size_kb', 50))
+        min_size_kb = get_config_param(self.env, 'cloud_attachment_storage.min_size_kb', 50, 'int')
         min_bytes = min_size_kb * 1024
-        
+
         domain = [
             ('is_cloud_storage', '=', False),
             ('type', '=', 'binary'),
             ('store_fname', '!=', False),
             ('file_size', '>=', min_bytes),
         ]
-        
+
         for record in self:
             attachments = self.env['ir.attachment'].search(domain)
             record.total_local_count = len(attachments)
@@ -52,11 +53,10 @@ class CloudAttachmentMigrationWizard(models.TransientModel):
     def action_migrate_batch(self):
         """Processes one batch of attachments and updates progress."""
         self.ensure_one()
-        config = self.env['ir.config_parameter'].sudo()
-        if config.get_param('cloud_attachment_storage.enabled', 'False') != 'True':
+        if not get_config_param(self.env, 'cloud_attachment_storage.enabled', False, 'bool'):
             raise UserError("Cloud Attachment Storage is currently disabled. Please enable and verify bucket settings first.")
 
-        min_size_kb = int(config.get_param('cloud_attachment_storage.min_size_kb', 50))
+        min_size_kb = get_config_param(self.env, 'cloud_attachment_storage.min_size_kb', 50, 'int')
         min_bytes = min_size_kb * 1024
 
         domain = [
@@ -80,12 +80,10 @@ class CloudAttachmentMigrationWizard(models.TransientModel):
                 }
             }
 
-        # Process the batch
         batch._process_cloud_offload()
         processed_count = len(batch)
         self.migrated_count += processed_count
 
-        # Check remaining
         remaining = self.env['ir.attachment'].search_count(domain)
         if remaining == 0:
             self.state = 'done'

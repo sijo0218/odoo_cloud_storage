@@ -117,3 +117,25 @@ class CloudStorageClient:
     def delete_object(cls, client, bucket_name, key):
         """Deletes object from bucket."""
         client.delete_object(Bucket=bucket_name, Key=key)
+
+
+def get_config_param(env, key, default='', param_type='str'):
+    """Universal configuration getter compatible with both Odoo 17/18/19 (get_param) and Odoo 20+ (typed getters)."""
+    ICP = env['ir.config_parameter'].sudo()
+    if hasattr(ICP, 'get_str'):
+        if param_type == 'bool':
+            return ICP.get_bool(key, default=bool(default))
+        elif param_type == 'int':
+            return ICP.get_int(key, default=int(default or 0))
+        return ICP.get_str(key, default=str(default or ''))
+    elif hasattr(ICP, 'get_param'):
+        val = ICP.get_param(key, default)
+        if param_type == 'bool':
+            return val in ('True', 'true', '1', True)
+        elif param_type == 'int':
+            try:
+                return int(val or 0)
+            except (ValueError, TypeError):
+                return int(default or 0)
+        return val if val is not None else default
+    return default

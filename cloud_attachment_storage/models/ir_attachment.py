@@ -3,7 +3,7 @@ import io
 import os
 import logging
 from odoo import api, fields, models
-from .cloud_storage_client import CloudStorageClient
+from .cloud_storage_client import CloudStorageClient, get_config_param
 
 _logger = logging.getLogger(__name__)
 
@@ -35,13 +35,12 @@ class IrAttachment(models.Model):
     )
 
     def _compute_cloud_presigned_url(self):
-        config = self.env['ir.config_parameter'].sudo()
-        enabled = config.get_param('cloud_attachment_storage.enabled', 'False') == 'True'
-        bucket = config.get_param('cloud_attachment_storage.bucket')
-        endpoint = config.get_param('cloud_attachment_storage.endpoint')
-        access_key = config.get_param('cloud_attachment_storage.access_key')
-        secret_key = config.get_param('cloud_attachment_storage.secret_key')
-        region = config.get_param('cloud_attachment_storage.region', 'auto')
+        enabled = get_config_param(self.env, 'cloud_attachment_storage.enabled', False, 'bool')
+        bucket = get_config_param(self.env, 'cloud_attachment_storage.bucket')
+        endpoint = get_config_param(self.env, 'cloud_attachment_storage.endpoint')
+        access_key = get_config_param(self.env, 'cloud_attachment_storage.access_key')
+        secret_key = get_config_param(self.env, 'cloud_attachment_storage.secret_key')
+        region = get_config_param(self.env, 'cloud_attachment_storage.region', 'auto')
 
         client = None
         if enabled and bucket and access_key and secret_key:
@@ -74,12 +73,11 @@ class IrAttachment(models.Model):
         self.ensure_one()
         if self.is_cloud_storage and self.cloud_storage_key:
             try:
-                config = self.env['ir.config_parameter'].sudo()
-                bucket = config.get_param('cloud_attachment_storage.bucket')
-                endpoint = config.get_param('cloud_attachment_storage.endpoint')
-                access_key = config.get_param('cloud_attachment_storage.access_key')
-                secret_key = config.get_param('cloud_attachment_storage.secret_key')
-                region = config.get_param('cloud_attachment_storage.region', 'auto')
+                bucket = get_config_param(self.env, 'cloud_attachment_storage.bucket')
+                endpoint = get_config_param(self.env, 'cloud_attachment_storage.endpoint')
+                access_key = get_config_param(self.env, 'cloud_attachment_storage.access_key')
+                secret_key = get_config_param(self.env, 'cloud_attachment_storage.secret_key')
+                region = get_config_param(self.env, 'cloud_attachment_storage.region', 'auto')
 
                 client = CloudStorageClient.get_client(
                     endpoint_url=endpoint,
@@ -91,7 +89,6 @@ class IrAttachment(models.Model):
                 return data
             except Exception as e:
                 _logger.error("Failed to read cloud storage attachment ID %s (key %s): %s", self.id, self.cloud_storage_key, e)
-                # Fallback to standard local filestore if available
                 return super()._file_read()
         return super()._file_read()
 
@@ -109,18 +106,17 @@ class IrAttachment(models.Model):
 
     def _process_cloud_offload(self):
         """Evaluates whether new or updated attachments qualify for cloud offloading."""
-        config = self.env['ir.config_parameter'].sudo()
-        if config.get_param('cloud_attachment_storage.enabled', 'False') != 'True':
+        if not get_config_param(self.env, 'cloud_attachment_storage.enabled', False, 'bool'):
             return
 
-        min_size_kb = int(config.get_param('cloud_attachment_storage.min_size_kb', 50))
-        bucket = config.get_param('cloud_attachment_storage.bucket')
-        endpoint = config.get_param('cloud_attachment_storage.endpoint')
-        access_key = config.get_param('cloud_attachment_storage.access_key')
-        secret_key = config.get_param('cloud_attachment_storage.secret_key')
-        region = config.get_param('cloud_attachment_storage.region', 'auto')
-        delete_local = config.get_param('cloud_attachment_storage.delete_local', 'True') == 'True'
-        provider = config.get_param('cloud_attachment_storage.provider', 'r2')
+        min_size_kb = get_config_param(self.env, 'cloud_attachment_storage.min_size_kb', 50, 'int')
+        bucket = get_config_param(self.env, 'cloud_attachment_storage.bucket')
+        endpoint = get_config_param(self.env, 'cloud_attachment_storage.endpoint')
+        access_key = get_config_param(self.env, 'cloud_attachment_storage.access_key')
+        secret_key = get_config_param(self.env, 'cloud_attachment_storage.secret_key')
+        region = get_config_param(self.env, 'cloud_attachment_storage.region', 'auto')
+        delete_local = get_config_param(self.env, 'cloud_attachment_storage.delete_local', True, 'bool')
+        provider = get_config_param(self.env, 'cloud_attachment_storage.provider', 'r2')
 
         if not (bucket and access_key and secret_key):
             return
@@ -137,7 +133,6 @@ class IrAttachment(models.Model):
             return
 
         for record in self:
-            # Skip records already offloaded or smaller than size threshold
             if record.is_cloud_storage or not record.store_fname:
                 continue
 
@@ -145,12 +140,10 @@ class IrAttachment(models.Model):
             if file_size_kb < min_size_kb:
                 continue
 
-            # Deterministic object key based on Odoo's SHA-1 checksum or store_fname
             db_name = self.env.cr.dbname
             object_key = f"{db_name}/{record.store_fname}"
 
             try:
-                # Read local content
                 local_path = record._full_path(record.store_fname)
                 if not os.path.exists(local_path):
                     continue
@@ -170,9 +163,7 @@ class IrAttachment(models.Model):
                     'cloud_storage_provider': provider,
                 })
 
-                # Delete local file if configured to reclaim local disk space
                 if delete_local and os.path.exists(local_path):
-                    # Only delete if no other local attachment shares the exact store_fname
                     count = self.search_count([('store_fname', '=', record.store_fname), ('is_cloud_storage', '=', False)])
                     if count == 0:
                         try:
@@ -186,12 +177,11 @@ class IrAttachment(models.Model):
 
     def unlink(self):
         """Cleans up objects in Cloud Storage upon attachment deletion."""
-        config = self.env['ir.config_parameter'].sudo()
-        bucket = config.get_param('cloud_attachment_storage.bucket')
-        endpoint = config.get_param('cloud_attachment_storage.endpoint')
-        access_key = config.get_param('cloud_attachment_storage.access_key')
-        secret_key = config.get_param('cloud_attachment_storage.secret_key')
-        region = config.get_param('cloud_attachment_storage.region', 'auto')
+        bucket = get_config_param(self.env, 'cloud_attachment_storage.bucket')
+        endpoint = get_config_param(self.env, 'cloud_attachment_storage.endpoint')
+        access_key = get_config_param(self.env, 'cloud_attachment_storage.access_key')
+        secret_key = get_config_param(self.env, 'cloud_attachment_storage.secret_key')
+        region = get_config_param(self.env, 'cloud_attachment_storage.region', 'auto')
 
         client = None
         if bucket and access_key and secret_key:
@@ -208,7 +198,6 @@ class IrAttachment(models.Model):
         keys_to_delete = []
         for record in self:
             if record.is_cloud_storage and record.cloud_storage_key:
-                # Check deduplication: make sure no other attachment uses this key
                 other_count = self.search_count([('id', 'not in', self.ids), ('cloud_storage_key', '=', record.cloud_storage_key)])
                 if other_count == 0:
                     keys_to_delete.append(record.cloud_storage_key)
