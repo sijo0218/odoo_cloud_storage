@@ -5,7 +5,7 @@
         <field name="model">cloud.attachment.migration.wizard</field>
         <field name="arch" type="xml">
             <form string="Batch Migrate Filestore to Cloud Storage">
-                <div class="alert alert-primary mb-3">
+                <div class="alert alert-primary mb-3" role="alert">
                     <h4><i class="fa fa-database me-2"/>Reclaim Your Server Disk Space</h4>
                     <p class="mb-0">
                         This utility safely moves historical attachments from your local server disk directly to your configured Cloud Storage bucket.

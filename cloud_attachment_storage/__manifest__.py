@@ -29,12 +29,12 @@ Key Features:
     'license': 'OPL-1',
     'price': 149.00,
     'currency': 'EUR',
-    'depends': ['base', 'mail'],
+    'depends': ['base', 'mail', 'base_setup'],
     'external_dependencies': {
         'python': ['boto3', 'botocore'],
     },
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'views/res_config_settings_views.xml',
         'views/ir_attachment_views.xml',
         'wizard/attachment_migration_wizard_views.xml',

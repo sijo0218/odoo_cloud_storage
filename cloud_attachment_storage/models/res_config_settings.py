@@ -5,7 +5,7 @@ from .cloud_storage_client import CloudStorageClient
 
 
 class ResConfigSettings(models.TransientModel):
-    _inherit = 'res_config.settings'
+    _inherit = 'res.config.settings'
 
     cloud_storage_enabled = fields.Boolean(
         string="Enable Cloud Attachment Storage",
