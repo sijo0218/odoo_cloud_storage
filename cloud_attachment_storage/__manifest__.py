@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Cloud Attachment Storage (AWS S3, Cloudflare R2 & MinIO)',
-    'version': '18.0.1.0.0',
+    'version': '17.0.1.0.0',
     'category': 'Extra Tools/Document Management',
     'summary': 'Offload attachments to AWS S3, Cloudflare R2, MinIO, or Wasabi. Drastically reduce disk bloat and backup time.',
     'description': """
