@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_cloud_storage" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.cloud.storage</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="90"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Cloud Storage" string="Cloud Storage" name="cloud_attachment_storage">
+                    <block title="Multi-Cloud Attachment Optimizer" id="cloud_storage_settings_block">
+                        <setting id="cloud_storage_enable_setting" help="Automatically route large attachments to AWS S3, Cloudflare R2, MinIO, or Wasabi.">
+                            <field name="cloud_storage_enabled"/>
+                        </setting>
+
+                        <div invisible="not cloud_storage_enabled">
+                            <block title="Bucket Credentials &amp; Endpoint">
+                                <setting id="cloud_provider_setting" string="Provider" help="Select your S3-compatible cloud storage provider.">
+                                    <field name="cloud_storage_provider" required="cloud_storage_enabled"/>
+                                </setting>
+                                <setting id="cloud_endpoint_setting" string="Endpoint URL" help="Custom endpoint for Cloudflare R2, MinIO, or Wasabi.">
+                                    <field name="cloud_storage_endpoint" placeholder="https://&lt;account_id&gt;.r2.cloudflarestorage.com"/>
+                                </setting>
+                                <setting id="cloud_bucket_setting" string="Bucket Name" help="Bucket where attachments will be safely stored.">
+                                    <field name="cloud_storage_bucket" required="cloud_storage_enabled" placeholder="my-odoo-attachments"/>
+                                </setting>
+                                <setting id="cloud_access_key_setting" string="Access Key" help="S3 API Access Key ID.">
+                                    <field name="cloud_storage_access_key" required="cloud_storage_enabled"/>
+                                </setting>
+                                <setting id="cloud_secret_key_setting" string="Secret Key" help="S3 API Secret Access Key.">
+                                    <field name="cloud_storage_secret_key" password="True" required="cloud_storage_enabled"/>
+                                </setting>
+                                <setting id="cloud_region_setting" string="Region" help="Bucket geographic region (e.g., us-east-1, or 'auto' for R2).">
+                                    <field name="cloud_storage_region"/>
+                                </setting>
+                                <div class="mt-3">
+                                    <button name="action_test_cloud_connection" type="object" string="Test Bucket Connection" class="btn btn-outline-primary"/>
+                                </div>
+                            </block>
+
+                            <block title="Performance &amp; Storage Optimization">
+                                <setting id="cloud_min_size_setting" string="Size Threshold (KB)" help="Files smaller than this remain local to prevent latency on small icons.">
+                                    <field name="cloud_storage_min_size_kb"/>
+                                </setting>
+                                <setting id="cloud_delete_local_setting" string="Reclaim Server Disk" help="Delete local file copies after successful upload to save 100% disk space.">
+                                    <field name="cloud_storage_delete_local"/>
+                                </setting>
+                                <setting id="cloud_presigned_setting" string="Direct Downloads" help="Generate pre-signed URLs to offload download bandwidth from your server.">
+                                    <field name="cloud_storage_use_presigned_urls"/>
+                                </setting>
+                                <div class="mt-3">
+                                    <button name="action_open_migration_wizard" type="object" string="Migrate Existing Filestore to Cloud..." class="btn btn-secondary"/>
+                                </div>
+                            </block>
+                        </div>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

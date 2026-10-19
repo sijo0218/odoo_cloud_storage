@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_attachment_form_inherit_cloud_storage" model="ir.ui.view">
+        <field name="name">ir.attachment.form.inherit.cloud.storage</field>
+        <field name="model">ir.attachment</field>
+        <field name="inherit_id" ref="base.view_attachment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info d-flex align-items-center mb-0" role="alert" invisible="not is_cloud_storage">
+                    <span class="fa fa-cloud me-2"/>
+                    <div>
+                        <strong>Hosted in Cloud Storage: </strong> This file is securely stored in 
+                        <field name="cloud_storage_provider" readonly="1" class="fw-bold"/> 
+                        (Key: <field name="cloud_storage_key" readonly="1"/>).
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="is_cloud_storage" readonly="1"/>
+                <field name="cloud_storage_key" readonly="1" invisible="not is_cloud_storage"/>
+                <field name="cloud_storage_presigned_url" widget="url" text="Direct Cloud Download Link" invisible="not cloud_storage_presigned_url" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

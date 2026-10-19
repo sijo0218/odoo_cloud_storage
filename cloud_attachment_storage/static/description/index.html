@@ -1,0 +1,116 @@
+<div class="container" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1e293b;">
+    <!-- Hero Section -->
+    <div class="row justify-content-center text-center py-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border-radius: 20px; color: #ffffff; margin-bottom: 40px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);">
+        <div class="col-11 col-lg-9">
+            <span class="badge rounded-pill text-bg-primary px-3 py-2 mb-3" style="font-size: 0.9rem; font-weight: 600; letter-spacing: 0.5px; background: #6366f1 !important;">PREMIUM STORAGE OPTIMIZER</span>
+            <h1 class="display-5 fw-bold mb-3" style="letter-spacing: -0.5px;">Cloud Attachment Storage</h1>
+            <p class="lead mb-4" style="color: #cbd5e1; font-size: 1.25rem;">
+                Offload binary files, invoices, and chatter attachments to <strong>Cloudflare R2, AWS S3, MinIO, or Wasabi</strong>. Slash server disk bloat, accelerate backups, and save up to 90% on hosting bills.
+            </p>
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <div class="p-2 px-3 rounded" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px);">
+                    <i class="fa fa-bolt text-warning me-2"></i> <strong>Zero Egress with R2</strong>
+                </div>
+                <div class="p-2 px-3 rounded" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px);">
+                    <i class="fa fa-lock text-success me-2"></i> <strong>S3v4 Encryption</strong>
+                </div>
+                <div class="p-2 px-3 rounded" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px);">
+                    <i class="fa fa-check-circle text-info me-2"></i> <strong>1-Click Filestore Migration</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Problem vs The Solution -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="p-4 h-100 rounded-4" style="background: #fef2f2; border: 1px solid #fecaca;">
+                <h3 class="text-danger fw-bold mb-3"><i class="fa fa-exclamation-triangle me-2"></i>The Problem</h3>
+                <ul class="list-unstyled" style="line-height: 2;">
+                    <li><i class="fa fa-times-circle text-danger me-2"></i> Local filestore balloons to 100s of Gigabytes from CRM, PDFs, and invoices.</li>
+                    <li><i class="fa fa-times-circle text-danger me-2"></i> Nightly database backups become agonizingly slow or fail from disk exhaustion.</li>
+                    <li><i class="fa fa-times-circle text-danger me-2"></i> SSD cloud hosting prices escalate rapidly on AWS EBS or DigitalOcean volumes.</li>
+                    <li><i class="fa fa-times-circle text-danger me-2"></i> Heavy file downloads tie up Odoo Python HTTP workers, slowing down users.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-4 h-100 rounded-4" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                <h3 class="text-success fw-bold mb-3"><i class="fa fa-check-circle me-2"></i>The Solution</h3>
+                <ul class="list-unstyled" style="line-height: 2;">
+                    <li><i class="fa fa-check text-success me-2"></i> Seamlessly routes attachments directly to high-speed S3-compatible buckets.</li>
+                    <li><i class="fa fa-check text-success me-2"></i> Reclaims 100% of server disk space with automatic local filestore cleanup.</li>
+                    <li><i class="fa fa-check text-success me-2"></i> Uses Cloudflare R2 ($0 egress fees) or Wasabi/S3 at fractions of a cent per GB.</li>
+                    <li><i class="fa fa-check text-success me-2"></i> Direct pre-signed URLs allow users to download files directly from the CDN.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supported Providers -->
+    <div class="text-center mb-5">
+        <h2 class="fw-bold mb-4">Supported Storage Backends</h2>
+        <div class="row g-3 justify-content-center">
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded-3 border text-center shadow-sm h-100">
+                    <i class="fa fa-cloud text-warning fa-3x mb-2"></i>
+                    <h5 class="fw-bold mb-1">Cloudflare R2</h5>
+                    <small class="text-muted">Zero Egress Fees &amp; Global CDN</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded-3 border text-center shadow-sm h-100">
+                    <i class="fa fa-amazon text-warning fa-3x mb-2"></i>
+                    <h5 class="fw-bold mb-1">Amazon AWS S3</h5>
+                    <small class="text-muted">Industry standard 99.999999999% durability</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded-3 border text-center shadow-sm h-100">
+                    <i class="fa fa-server text-primary fa-3x mb-2"></i>
+                    <h5 class="fw-bold mb-1">MinIO</h5>
+                    <small class="text-muted">Self-hosted on-premise private cloud</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded-3 border text-center shadow-sm h-100">
+                    <i class="fa fa-database text-success fa-3x mb-2"></i>
+                    <h5 class="fw-bold mb-1">Wasabi</h5>
+                    <small class="text-muted">High-performance hot storage</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Features Grid -->
+    <div class="mb-5">
+        <h2 class="fw-bold text-center mb-4">Enterprise-Grade Features</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-4 rounded-3 border h-100">
+                    <h5 class="fw-bold"><i class="fa fa-magic text-primary me-2"></i>Zero Workflow Changes</h5>
+                    <p class="text-muted mb-0">Users continue uploading and viewing files exactly as before in CRM leads, chatter, invoices, and website forms. Everything happens transparently in the background.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 rounded-3 border h-100">
+                    <h5 class="fw-bold"><i class="fa fa-history text-primary me-2"></i>Batch Migration Wizard</h5>
+                    <p class="text-muted mb-0">Already running an active Odoo database? Safely migrate thousands of legacy attachments in controlled batches with real-time progress tracking.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 rounded-3 border h-100">
+                    <h5 class="fw-bold"><i class="fa fa-sliders text-primary me-2"></i>Smart Size Thresholds</h5>
+                    <p class="text-muted mb-0">Configure minimum file sizes (e.g. >50 KB) so small UI icons remain in memory while heavy documents and photos move to the cloud.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support and Compatibility -->
+    <div class="p-4 rounded-4 text-center" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+        <h4 class="fw-bold mb-2">Compatibility &amp; Dedicated Support</h4>
+        <p class="text-muted mb-3">Compatible with <strong>Odoo Community &amp; Enterprise Editions</strong> (v17.0, v18.0, v19.0, v20.0).</p>
+        <p class="mb-0">Need assistance or a custom integration? Email author: <strong>sijo0218@gmail.com</strong></p>
+    </div>
+</div>

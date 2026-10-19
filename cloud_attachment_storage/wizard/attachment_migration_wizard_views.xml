@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cloud_attachment_migration_wizard_form" model="ir.ui.view">
+        <field name="name">cloud.attachment.migration.wizard.form</field>
+        <field name="model">cloud.attachment.migration.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Batch Migrate Filestore to Cloud Storage">
+                <div class="alert alert-primary mb-3">
+                    <h4><i class="fa fa-database me-2"/>Reclaim Your Server Disk Space</h4>
+                    <p class="mb-0">
+                        This utility safely moves historical attachments from your local server disk directly to your configured Cloud Storage bucket.
+                    </p>
+                </div>
+
+                <group>
+                    <group string="Filestore Analysis">
+                        <field name="total_local_count" readonly="1"/>
+                        <field name="total_local_size_mb" readonly="1"/>
+                    </group>
+                    <group string="Execution Parameters">
+                        <field name="batch_size"/>
+                        <field name="migrated_count" readonly="1"/>
+                        <field name="state" invisible="1"/>
+                    </group>
+                </group>
+
+                <footer>
+                    <button name="action_migrate_batch" type="object" string="Migrate Next Batch" class="btn btn-primary" invisible="state == 'done'"/>
+                    <button string="Close" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
